@@ -4,8 +4,13 @@
   "package": "dev.s0vi.shakemyhand.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+
   ],
   "client": [
+    "MultiplayerScreenMixin",
+    "EntryListWidgetAccessor",
+    "ScreenAccessor",
+    "MultiplayerScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

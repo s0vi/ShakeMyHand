@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "ShakeMyHand",
+  "id": "shakemyhand",
   "version": "${version}",
   "name": "ShakeMyHand",
   "description": "Downloading modpacks is so inconvenient. Now you'll never have to do it again!",
