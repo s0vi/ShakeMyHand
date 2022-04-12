@@ -23,12 +23,23 @@ downloads and reloads Minecraft to match the mods on any server you join.
 ## Roadmap
   
 - [ ] Alpha
-  - [ ] Successfully inject into the Fabric Loader
+  - [X] ~~Successfully inject into the Fabric Loader~~ Trivial and unnecessary, moved to Beta
   - [ ] Establish networking between server and client 
   - [ ] Establish a schema in `fabric.mod.json` to read download link
   - [ ] Download mods from given links
     - [ ] Modrinth
     - [ ] Curseforge
     - [ ] Github
-  - [ ] Establish a way to restart the game
-- [ ] 
+  - [ ] Add a "Server Guided" mode, where the client receives a modpack link or list of download links from the 
+    server, instead of mod resolution being the client's responsibility
+  - [ ] Establish a **reliable way** to restart the game
+- [ ] Beta
+  - [ ] Search mod repositories when links aren't supplied
+      - [ ] Checksum verification
+  - [ ] Reload game without complete restart
+  - [ ] Modify Fabric Launcher code (without breaking shit)
+  - [ ] Seamlessly bring client back into server joining screen after restart/refresh
+  - [ ] Local Mod Repository (LRM)
+  - [ ] Config Support
+- [ ] Release
+  - [ ] Modify classloader to load mods from LRM without copying to "head" mods file.
