@@ -22,6 +22,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 processResources {
@@ -41,6 +42,7 @@ tasks.withType(JavaCompile).configureEach {
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        //noinspection GroovyAssignabilityCheck
         it.options.release = targetJavaVersion
     }
 }
@@ -48,6 +50,7 @@ tasks.withType(JavaCompile).configureEach {
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
+        //noinspection GroovyAssignabilityCheck
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
     archivesBaseName = project.archives_base_name
@@ -66,6 +69,7 @@ jar {
 // configure the maven publication
 publishing {
     publications {
+        //noinspection GroovyAssignabilityCheck
         mavenJava(MavenPublication) {
             from components.java
         }
