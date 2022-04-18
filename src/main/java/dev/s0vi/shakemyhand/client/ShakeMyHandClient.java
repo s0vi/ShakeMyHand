@@ -1,9 +1,9 @@
 package dev.s0vi.shakemyhand.client;
 
-import dev.s0vi.shakemyhand.ShakeMyHand;
 import dev.s0vi.shakemyhand.client.ui.TooltipSupplier;
+import dev.s0vi.shakemyhand.common.config.ClientConfig;
+import dev.s0vi.shakemyhand.common.config.ConfigManager;
 import dev.s0vi.shakemyhand.mixin.MultiplayerScreenAccessor;
-import dev.s0vi.shakemyhand.mixin.MultiplayerScreenMixin;
 import dev.s0vi.shakemyhand.mixin.ScreenAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -17,13 +17,13 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.io.File;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ShakeMyHandClient implements ClientModInitializer {
     private final FabricLoaderImpl loader = FabricLoaderImpl.InitHelper.get();
     private final ModManager modManager = new ModManager(loader.getGameDir().resolve("shakemyhand").toFile(), loader.getGameDir().resolve("mods").toFile());
+    private final ConfigManager<ClientConfig> clientConfigManager = new ConfigManager<ClientConfig>(ClientConfig.class, ClientConfig::new);
 
     @Override
     public void onInitializeClient() {
