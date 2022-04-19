@@ -16,14 +16,12 @@ public class GETRequestHandler {
     private static GETRequestHandler INSTANCE;
     public static GETRequestHandler getInstance() {
         if(INSTANCE == null) {
-            //noinspection InstantiationOfUtilityClass
             INSTANCE = new GETRequestHandler();
         }
 
         return INSTANCE;
     }
 
-//    private Gson GSON = new Gson();
     private final Logger LOGGER = ShakeMyHand.LOGGER;
 
     public CompletableFuture<GETResponse> sendGETRequest(URL url) {

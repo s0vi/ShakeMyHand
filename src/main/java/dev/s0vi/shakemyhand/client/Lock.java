@@ -7,7 +7,7 @@ public class Lock {
     private String targetModlist = "";
 
 
-    public String getVersionString () {
+    public String getVersionString() {
         return VERSION_STRING_TO_NOT_TOUCH;
     }
 
