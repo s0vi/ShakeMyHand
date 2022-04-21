@@ -1,9 +1,8 @@
-package dev.s0vi.shakemyhand.common.config;
+package dev.s0vi.shakemyhand.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.s0vi.shakemyhand.ShakeMyHand;
-import dev.s0vi.shakemyhand.common.config.Config;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.apache.logging.log4j.Logger;
 

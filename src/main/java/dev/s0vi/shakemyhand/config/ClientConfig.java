@@ -1,4 +1,4 @@
-package dev.s0vi.shakemyhand.common.config;
+package dev.s0vi.shakemyhand.config;
 
 public class ClientConfig extends Config {
     public boolean alwaysHardRestart = false;

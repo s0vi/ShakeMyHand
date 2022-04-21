@@ -2,25 +2,45 @@ package dev.s0vi.shakemyhand.common.network;
 
 import dev.s0vi.shakemyhand.ShakeMyHand;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public interface JarDownloader {
-    default CompletableFuture<Path> downloadJar(URL url) {
+public class GithubModDownloader implements ModDownloader {
+    private final Logger logger = ShakeMyHand.LOGGER;
+
+    @Override
+    public Optional<String> getName(URL url) {
+        String[] urlChunks = url.toExternalForm().substring(7).split("/");
+        String repo = urlChunks[2];
+
+        return Optional.of(repo);
+    }
+
+    @Override
+    public Optional<String> getFileName(URL url) {
+        String[] urlChunks = url.toExternalForm().substring(7).split("/");
+        String user = urlChunks[1];
+        String repo = urlChunks[2];
+        String version = urlChunks[5];
+
+        return Optional.of("%s-%s-%s.jar".formatted(user, repo, version));
+    }
+
+    @Override
+    public CompletableFuture<Path> downloadJar(URL url) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-                byte[] databuffer = new byte[1024];
-                int bytesRead;
 
                 Path path = FabricLoaderImpl.InitHelper.get().getGameDir().resolve("SMH_mods");
                 Optional<String> fileNameOpt = getFileName(url);
@@ -49,26 +69,25 @@ public interface JarDownloader {
         });
     }
 
-
-    default CompletableFuture<Path> downloadJar(String urlString) {
-        try {
-            URL url = new URL(urlString);
-            return downloadJar(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return CompletableFuture.failedFuture(e);
-        }
+    @Override
+    public CompletableFuture<List<URL>> searchApiForMatch(String name) {
+        return null;
     }
 
-    Optional<String> getFileName(URL url);
-
-    /***
-     * This is the **LEAST** reliable way to get a mod. In the future, this feature may be removed entirely.
-     *
-     * @param name The name of the mod. Usually, this is the name of the jar file.
-     * @param version The version of the mod
-     * @param authorName The name of the author.
-     * @return
-     */
-    CompletableFuture<Path> searchAndDownload(String name, String version, String authorName);
+    //    @Override
+//    public Optional<String> getFileName(URL url) {
+//        String[] urlChunks = url.toExternalForm().substring(7).split("/");
+//        String user = urlChunks[1];
+//        String repo = urlChunks[2];
+//        String version = urlChunks[5];
+//
+//        return Optional.of("%s-%s-%s.jar".formatted(user, repo, version));
+//    }
+//
+//
+//    public CompletableFuture<Path> searchAndDownload(String repo, String versionTag, String githubUser) {
+//
+//
+//        return downloadJar("https://github.com/%s/%s/releases/tag/%s".formatted(githubUser, repo, versionTag));
+//    }
 }
