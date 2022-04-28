@@ -3,57 +3,102 @@ package dev.s0vi.shakemyhand.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.s0vi.shakemyhand.ShakeMyHand;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.ForkJoinPool;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
-public class ConfigManager<T extends Config> {
-    private final Class<T> configType;
-    private final Supplier<T> defaultSupplier;
-    private final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-    private final Logger logger = ShakeMyHand.LOGGER;
-    private final Path configPath = FabricLoaderImpl.InitHelper.get().getConfigDir().resolve("shakemyhand.json");
+public class ConfigManager {
+    private static final Logger LOGGER = ShakeMyHand.LOGGER;
 
-    public ConfigManager(Class<T> configType, Supplier<T> defaultSupplier) {
-        this.configType = configType;
-        this.defaultSupplier = defaultSupplier;
+    private final Path configPath;
+    private final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+
+    private ClientConfig config = new ClientConfig();
+
+    public ConfigManager(Path configPath) {
+        this.configPath = configPath;
+        this.config = getOrCreateConfig();
+        writeConfig();
     }
 
-    public T getOrCreateConfig() {
-        T config;
+    private ClientConfig getOrCreateConfig() {
+        LOGGER.info("Config exists: {}", configPath.toFile().exists());
 
-        try{
-            config = GSON.fromJson(new FileReader(configPath.toFile()), configType);
+        ClientConfig tempConfig = null;
+
+        try {
+            tempConfig = GSON.fromJson(new FileReader(configPath.toFile()), ClientConfig.class);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            logger.error("Unable to find or read config at \"{}\"! Is that a protected folder?", configPath);
-            logger.error("Creating default config... this may mean certain settings aren't what you intended.");
-            config = defaultSupplier.get();
+            LOGGER.warn("Config could not be loaded. Creating a new one!");
         }
 
-        return config;
+        if(tempConfig != null) return tempConfig;
+
+        return new ClientConfig();
     }
 
-    public void writeConfig(T config) {
-        String json = GSON.toJson(config, configType);
-        logger.info("Saving config... sending to thread pool");
-
-        ForkJoinPool.commonPool().submit(() -> {
+    private void writeConfig() {
+        CompletableFuture.runAsync(() -> {
             try {
-                FileWriter writer = new FileWriter(configPath.toFile());
-
-                logger.info("Writing config to \"{}\"", configPath);
-                writer.write(json);
-                logger.info("Successfully wrote config!");
+                FileWriter fw = new FileWriter(configPath.toFile());
+                fw.write(GSON.toJson(config));
+                fw.close();
+                LOGGER.info("Successfully wrote config.");
             } catch (IOException e) {
-                e.printStackTrace();
-                logger.error("Unable to save config to \"{}\"! Is that a protected folder?", configPath);
-                logger.error("Config not saved! Values may not be correct upon next config read.");
+                LOGGER.info("Unable to write config! Changes not saved!");
             }
         });
     }
+
+    public boolean shouldAlwaysHardRestart() {
+        return config.alwaysHardRestart;
+    }
+
+    public boolean shouldTryToRejoin() {
+        return config.tryToRejoin;
+    }
+
+    public boolean shouldTryToResolveUnknownMods() {
+        return config.tryToResolveUnknownMods;
+    }
+
+    public String getModListToLoad() {
+        return config.modListToLoad;
+    }
+
+    public boolean needsReload() {
+        return config.needsReload;
+    }
+
+    public void setAlwaysHardRestart(boolean bool) {
+        config.alwaysHardRestart = bool;
+        writeConfig();
+    }
+
+    public void setTryToRejoin(boolean bool) {
+        config.tryToRejoin = bool;
+        writeConfig();
+    }
+
+    public void setTryToResolveUnknownMods(boolean bool) {
+        config.tryToResolveUnknownMods = bool;
+        writeConfig();
+    }
+
+    public void setModLostToLoad(String str) {
+        config.modListToLoad = str;
+        config.needsReload = false;
+        writeConfig();
+    }
+
+    public void setNeedsReload(boolean bool) {
+        config.needsReload = bool;
+        writeConfig();
+    }
+
 }

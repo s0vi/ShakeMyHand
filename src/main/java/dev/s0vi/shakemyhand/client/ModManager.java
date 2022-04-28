@@ -1,15 +1,13 @@
 package dev.s0vi.shakemyhand.client;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.s0vi.shakemyhand.ShakeMyHand;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.fabricmc.loader.impl.ModContainerImpl;
 import net.fabricmc.loader.impl.discovery.*;
 import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.minecraft.client.network.ServerInfo;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -70,52 +68,6 @@ public class ModManager {
 
             return modCandidates.stream().map(ModContainerImpl::new).collect(Collectors.toList());
         }
-    }
-
-    private void setChangeModlistOnRestart(boolean bool) {
-        writeLockFile(getLockFile().setChangeModlistOnRestart(bool));
-    }
-
-    private void setTargetModlist(String modlist) {
-        writeLockFile(getLockFile().setTargetModlist(modlist));
-    }
-
-    private Lock getLockFile() {
-        File lockFile = workingDir.resolve("smh.lock").toFile();
-
-        Lock lock;
-        try {
-            lock = GSON.fromJson(new FileReader(lockFile), Lock.class);
-            logger.info("Lock file read!");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            logger.info("Lock file not found... constructing default");
-
-            lock = new Lock();
-        }
-
-        return lock;
-    }
-
-    public void writeLockFile(Lock lock) {
-        ForkJoinPool.commonPool().submit(() -> {
-            File lockFile = workingDir.resolve("smh.lock").toFile();
-            String lockString = GSON.toJson(lock);
-
-            try {
-                FileWriter writer = new FileWriter(lockFile);
-                writer.write(lockString);
-            } catch (IOException e) {
-                e.printStackTrace();
-                logger.error("Unable to save lock file! The game may not reload properly!");
-            }
-
-        });
-    }
-
-    public void prepareRestart(String serverIP) {
-        setTargetModlist(serverIP);
-        setChangeModlistOnRestart(true);
     }
 
 }

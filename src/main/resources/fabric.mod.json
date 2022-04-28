@@ -20,6 +20,9 @@
     ],
     "main": [
       "dev.s0vi.shakemyhand.ShakeMyHand"
+    ],
+    "preLaunch": [
+      "dev.s0vi.shakemyhand.ShakeMyHand"
     ]
   },
   "mixins": [

@@ -23,6 +23,12 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'org.jooq:joor:0.9.14'
+
+    api('net.fabricmc:sponge-mixin:0.11.3+mixin.0.8.5') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+    }
 }
 
 processResources {

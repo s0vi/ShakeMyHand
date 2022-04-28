@@ -1,16 +1,15 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.s0vi.shakemyhand.mixin",
+  "package": "dev.s0vi.shakemyhand.mixin.modMixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-
   ],
   "client": [
-    "MultiplayerScreenMixin",
-    "EntryListWidgetAccessor",
-    "ScreenAccessor",
-    "MultiplayerScreenAccessor"
+    "dev.s0vi.shakemyhand.client.mixin.EntryListWidgetAccessor",
+    "dev.s0vi.shakemyhand.client.mixin.MultiplayerScreenAccessor",
+    "dev.s0vi.shakemyhand.client.mixin.MultiplayerScreenMixin",
+    "dev.s0vi.shakemyhand.client.mixin.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

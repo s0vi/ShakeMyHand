@@ -1,23 +1,13 @@
 package dev.s0vi.shakemyhand.config;
 
-public class ClientConfig extends Config {
+public class ClientConfig {
     public boolean alwaysHardRestart = false;
     public boolean tryToRejoin = true;
     public boolean tryToResolveUnknownMods = true;
 
-    private String modListToLoad = "";
+    public String modListToLoad = "";
     public boolean needsReload = false;
 
-    public String getModListToLoad() {
-        return modListToLoad;
-    }
-
-    public void setModListToLoad(String path) {
-        this.modListToLoad = path;
-        this.needsReload = true;
-    }
-
     public ClientConfig() {
-
     }
 }
